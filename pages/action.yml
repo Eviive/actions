@@ -1,0 +1,22 @@
+name: Deploy to GitHub Pages
+author: Eviive
+
+inputs:
+  token:
+    description: GitHub token
+    required: true
+  build_dir:
+    description: The directory where the build is located
+    required: true
+    default: build
+
+runs:
+  using: composite
+  steps:
+    - name: Deploy to GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v1
+      with:
+        target_branch: gh-pages
+        build_dir: ${{ inputs.build_dir }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
