@@ -3,6 +3,12 @@ author: Eviive
 description: Builds a Docker image and pushes it to Docker Hub
 
 inputs:
+  docker-hub-username:
+    description: Docker Hub username
+    required: true
+  docker-hub-token:
+    description: Docker Hub token
+    required: true
   docker-hub-repository:
     description: Docker Hub repository where the image will be pushed
     required: true
@@ -17,7 +23,7 @@ runs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ inputs.docker-hub-repository }}
+        images: ${{ inputs.docker-hub-username }}/${{ inputs.docker-hub-repository }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -25,8 +31,8 @@ runs:
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+        username: ${{ inputs.docker-hub-username }}
+        password: ${{ inputs.docker-hub-token }}
 
     - name: Push to Docker Hub
       uses: docker/build-push-action@v4
