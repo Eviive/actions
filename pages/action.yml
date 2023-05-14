@@ -1,5 +1,6 @@
-name: Deploy to GitHub Pages
+name: Deploy
 author: Eviive
+description: Deploy your build to GitHub Pages
 
 inputs:
   token:

@@ -1,4 +1,4 @@
-name: npm Clean Install and Build
+name: Build
 author: Eviive
 description: Sets up Node.js and runs npm ci and npm run build
 
