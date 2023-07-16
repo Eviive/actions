@@ -12,12 +12,22 @@ inputs:
   docker-hub-repository:
     description: Docker Hub repository where the image will be pushed
     required: true
+  lfs:
+    description: Whether to use Git LFS
+    default: false
 
 runs:
   using: composite
   steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        lfs: ${{ inputs.lfs }}
+
+    - name: Checkout LFS objects
+      if: ${{ inputs.lfs == 'true' }}
+      shell: bash
+      run: git lfs checkout
 
     - name: Docker meta
       id: meta
