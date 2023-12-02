@@ -21,8 +21,12 @@ runs:
       run: mkdir --parent ~/.ssh
 
     - name: Start SSH agent
+      if: ${{ !$SSH_AGENT_PID }}
       shell: bash
-      run: eval $(ssh-agent)
+      run: |
+        eval $(ssh-agent -s)
+        echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
+        echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
 
     - name: Add SSH key
       shell: bash
