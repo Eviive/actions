@@ -17,7 +17,7 @@ runs:
     using: composite
     steps:
       - name: SSH Setup
-        uses: eviive/ssh-setup@main
+        uses: eviive/actions/ssh-setup@main
         with:
           host: ${{ inputs.host }}
           key: ${{ inputs.key }}
