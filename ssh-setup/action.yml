@@ -20,7 +20,11 @@ runs:
       shell: bash
       run: mkdir --parent ~/.ssh
 
-    - name: Add SSH
+    - name: Start SSH agent
+      shell: bash
+      run: eval $(ssh-agent)
+
+    - name: Add SSH key
       shell: bash
       run: |
         echo "${{ inputs.key }}" > ~/.ssh/${{ inputs.key-name }}
