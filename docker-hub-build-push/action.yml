@@ -12,6 +12,9 @@ inputs:
   docker-hub-repository:
     description: Docker Hub repository where the image will be pushed
     required: true
+  dockerfile:
+    description: Path to the Dockerfile
+    default: Dockerfile
   lfs:
     description: Whether to use Git LFS
     default: false
@@ -47,7 +50,7 @@ runs:
     - name: Push to Docker Hub
       uses: docker/build-push-action@v4
       with:
-        context: .
         push: true
+        file: ${{ inputs.dockerfile }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
