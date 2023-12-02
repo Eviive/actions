@@ -21,7 +21,7 @@ runs:
       run: mkdir --parent ~/.ssh
 
     - name: Start SSH agent
-      if: ${{ !$SSH_AGENT_PID }}
+      if: env.SSH_AGENT_PID == ''
       shell: bash
       run: |
         eval $(ssh-agent -s)
