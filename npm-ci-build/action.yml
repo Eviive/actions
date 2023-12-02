@@ -1,4 +1,4 @@
-name: Build
+name: NPM CI Build
 author: Eviive
 description: Sets up Node.js and runs npm ci and npm run build
 
@@ -21,9 +21,9 @@ runs:
         cache: npm
 
     - name: Clean install of the dependencies
-      run: npm ci
       shell: bash
+      run: npm ci
 
     - name: Build
-      run: npm run build
       shell: bash
+      run: npm run build

@@ -1,0 +1,32 @@
+name: SSH Setup
+author: Eviive
+description: Sets up an SSH connection to a remote host
+
+inputs:
+  host:
+    description: SSH host adress
+    required: true
+  key:
+    description: SSH private key
+    required: true
+  key-name:
+    description: SSH private key name
+    default: id_rsa
+
+runs:
+  using: composite
+  steps:
+    - name: Create .ssh directory
+      shell: bash
+      run: mkdir --parent ~/.ssh
+
+    - name: Add SSH
+      shell: bash
+      run: |
+        echo "${{ inputs.key }}" > ~/.ssh/${{ inputs.key-name }}
+        chmod 600 ~/.ssh/${{ inputs.key-name }}
+        ssh-add ~/.ssh/${{ inputs.key-name }}
+
+    - name: Add host to known hosts
+      shell: bash
+      run: ssh-keyscan -H ${{ inputs.host }} >> ~/.ssh/known_hosts

@@ -4,7 +4,7 @@ description: Sets up a connection to a remote Docker host
 
 inputs:
   host:
-    description: SSH host adress
+    description: SSH host address
     required: true
   username:
     description: SSH username
@@ -16,14 +16,16 @@ inputs:
 runs:
     using: composite
     steps:
-      - name: Set up SSH
-        uses: MrSquaare/ssh-setup-action@v3
+      - name: SSH Setup
+        uses: eviive/ssh-setup@main
         with:
           host: ${{ inputs.host }}
-          private-key: ${{ inputs.key }}
-          private-key-name: ${{ inputs.username }}-${{ inputs.host }}-key
+          key: ${{ inputs.key }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          endpoint: ssh://${{ inputs.username }}@${{ inputs.host }}
+      - name: Create Docker remote context
+        shell: bash
+        run: docker context create remote --docker host=ssh://${{ inputs.username }}@${{ inputs.host }}
+
+      - name: Use Docker remote context
+        shell: bash
+        run: docker context use remote

@@ -29,8 +29,8 @@ runs:
       shell: bash
       run: git lfs checkout
 
-    - name: Docker meta
-      id: meta
+    - id: meta
+      name: Docker meta
       uses: docker/metadata-action@v4
       with:
         images: ${{ inputs.docker-hub-username }}/${{ inputs.docker-hub-repository }}
