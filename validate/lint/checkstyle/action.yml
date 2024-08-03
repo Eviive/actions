@@ -1,0 +1,28 @@
+name: Checkstyle
+author: Eviive
+description: Runs Checkstyle on the codebase and reports the results as a GitHub check
+
+inputs:
+  token:
+    description: GitHub token
+    required: true
+  checkstyle_config:
+    description: Path to the Checkstyle configuration file
+    required: true
+  checkstyle_version:
+    description: Checkstyle version
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Run Checkstyle action
+      uses: dbelyaev/action-checkstyle@v1.14.0
+      with:
+        github_token: ${{ inputs.token }}
+        checkstyle_config: ${{ inputs.checkstyle_config }}
+        checkstyle_version: ${{ inputs.checkstyle_version }}
+        reporter: github-pr-review
