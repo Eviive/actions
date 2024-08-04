@@ -1,6 +1,6 @@
 name: Checkstyle
 author: Eviive
-description: Runs Checkstyle on the codebase and reports the results as a GitHub check
+description: Runs Checkstyle on the codebase and reports the results using reviewdog
 
 inputs:
   token:

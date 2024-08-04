@@ -1,0 +1,20 @@
+name: ESLint
+author: Eviive
+description: Runs ESLint on the codebase and reports the results using reviewdog
+
+inputs:
+  token:
+    description: GitHub token
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Run ESLint action
+      uses: reviewdog/action-eslint@v1.31.0
+      with:
+        github_token: ${{ inputs.token }}
+        reporter: github-pr-review
