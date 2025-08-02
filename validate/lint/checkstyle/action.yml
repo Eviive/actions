@@ -3,15 +3,18 @@ author: Eviive
 description: Runs Checkstyle on the codebase and reports the results using reviewdog
 
 inputs:
-  token:
-    description: GitHub token
+  version:
+    description: The CheckStyle version to install
     required: true
-  checkstyle_config:
-    description: Path to the Checkstyle configuration file
+  java-version:
+    description: The Java version to install
+    default: "21"
+  config:
+    description: The path to the Checkstyle configuration file
     required: true
-  checkstyle_version:
-    description: Checkstyle version
-    required: true
+  workdir:
+    description: The working directory relative to the root directory
+    default: src/main/java
 
 runs:
   using: composite
@@ -19,10 +22,16 @@ runs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Run Checkstyle action
-      uses: dbelyaev/action-checkstyle@v1.14.0
+    - name: Setup Java
+      uses: actions/setup-java@v4
       with:
-        github_token: ${{ inputs.token }}
-        checkstyle_config: ${{ inputs.checkstyle_config }}
-        checkstyle_version: ${{ inputs.checkstyle_version }}
-        reporter: github-pr-review
+        java-version: ${{ inputs.java-version }}
+        distribution: temurin
+
+    - name: Setup CheckStyle
+      shell: bash
+      run: wget https://github.com/checkstyle/checkstyle/releases/download/checkstyle-${{ inputs.version }}/checkstyle-${{ inputs.version }}-all.jar
+
+    - name: Run CheckStyle
+      shell: bash
+      run: java -jar checkstyle-${{ inputs.version }}-all.jar -c ${{ inputs.config }} ${{ inputs.workdir }}
