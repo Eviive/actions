@@ -33,7 +33,7 @@ runs:
 
     - name: Setup CheckStyle
       shell: bash
-      run: wget -q -O  https://github.com/checkstyle/checkstyle/releases/download/checkstyle-${{ inputs.version }}/checkstyle-${{ inputs.version }}-all.jar
+      run: wget -q -O checkstyle.jar https://github.com/checkstyle/checkstyle/releases/download/checkstyle-${{ inputs.version }}/checkstyle-${{ inputs.version }}-all.jar
 
     - name: Setup CheckStyle Properties
       shell: bash
@@ -41,4 +41,4 @@ runs:
 
     - name: Run CheckStyle
       shell: bash
-      run: java -jar checkstyle-${{ inputs.version }}-all.jar -c ${{ inputs.config }} -p checkstyle.properties ${{ inputs.workdir }}
+      run: java -jar checkstyle.jar -c ${{ inputs.config }} -p checkstyle.properties ${{ inputs.workdir }}
