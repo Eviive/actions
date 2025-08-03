@@ -2,24 +2,16 @@ name: Prettier
 author: Eviive
 description: Runs Prettier on the codebase
 
-inputs:
-  version:
-    description: The Prettier version to install
-    default: latest
-  plugins:
-    description: The Prettier plugins to install
-    required: false
-
 runs:
   using: composite
   steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup Prettier
+    - name: NPM clean install
       shell: bash
-      run: npm install --global prettier@${{ inputs.version }} ${{ inputs.plugins }}
+      run: npm ci
 
     - name: Prettier
       shell: bash
-      run: prettier --check .
+      run: npx prettier --check .

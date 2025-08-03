@@ -2,24 +2,16 @@ name: ESLint
 author: Eviive
 description: Runs ESLint on the codebase
 
-inputs:
-  version:
-    description: The ESLint version to install
-    default: latest
-  plugins:
-    description: The ESLint plugins to install
-    required: false
-
 runs:
   using: composite
   steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup ESLint
+    - name: NPM clean install
       shell: bash
-      run: npm install --global eslint@${{ inputs.version }} ${{ inputs.plugins }}
+      run: npm ci
 
     - name: ESLint
       shell: bash
-      run: eslint .
+      run: npx eslint .
