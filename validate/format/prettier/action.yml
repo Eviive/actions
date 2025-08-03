@@ -6,6 +6,9 @@ inputs:
   version:
     description: The Prettier version to install
     default: latest
+  plugins:
+    description: The Prettier plugins to install
+    required: false
 
 runs:
   using: composite
@@ -15,7 +18,7 @@ runs:
 
     - name: Setup Prettier
       shell: bash
-      run: npm install --global prettier@${{ inputs.version }}
+      run: npm install --global prettier@${{ inputs.version }} ${{ inputs.plugins }}
 
     - name: Prettier
       shell: bash

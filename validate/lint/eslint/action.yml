@@ -6,6 +6,9 @@ inputs:
   version:
     description: The ESLint version to install
     default: latest
+  plugins:
+    description: The ESLint plugins to install
+    required: false
 
 runs:
   using: composite
@@ -15,7 +18,7 @@ runs:
 
     - name: Setup ESLint
       shell: bash
-      run: npm install --global eslint@${{ inputs.version }}
+      run: npm install --global eslint@${{ inputs.version }} ${{ inputs.plugins }}
 
     - name: ESLint
       shell: bash
