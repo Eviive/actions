@@ -11,7 +11,11 @@ runs:
   steps:
     - name: Install Kustomize
       shell: bash
-      run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- ${{ inputs.version }} /usr/local/bin
+      run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- ${{ inputs.version }} ${{ runner.temp }}/kustomize
+
+    - name: Add Kustomize to PATH
+      shell: bash
+      run: echo "${{ runner.temp }}/kustomize" >> $GITHUB_PATH
 
     - name: Verify Kustomize Installation
       shell: bash
