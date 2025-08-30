@@ -1,0 +1,18 @@
+name: Install Kustomize
+author: Eviive
+description: Installs Kustomize
+
+inputs:
+  version:
+    description: The Kustomize version to install
+
+runs:
+  using: composite
+  steps:
+    - name: Download Installer
+      shell: bash
+      run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- ${{ inputs.version }} /usr/local/bin
+
+    - name: Verify Installation
+      shell: bash
+      run: kustomize version

@@ -14,7 +14,6 @@ inputs:
     default: config/checkstyle/checkstyle.xml
   properties:
     description: The properties file content to use with CheckStyle
-    required: false
   workdir:
     description: The working directory relative to the root directory
     default: src/main/java
