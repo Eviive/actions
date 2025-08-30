@@ -1,0 +1,32 @@
+name: Find Changed Kustomize Overlays
+author: Eviive
+description: Finds all the changed Kustomize overlays
+
+outputs:
+  changed-overlays:
+    description: A JSON array of changed Kustomize overlays
+    value: ${{ steps.filter.outputs.changes }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - id: build-filters
+      name: Build Kustomize overlay filters
+      shell: bash
+      run: |
+        echo "filters<<EOF" >> $GITHUB_OUTPUT
+        find . -path "*/overlays/*/kustomization.yaml" | while read file; do
+          path=$(dirname "$file" | sed 's|^\./||')
+          folder=$(echo "$path" | cut -d'/' -f1)
+          echo "$path: $folder/**" >> $GITHUB_OUTPUT
+        done
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - id: filter
+      name: Filter changed Kustomize overlays
+      uses: dorny/paths-filter@v3
+      with:
+        filters: ${{ steps.build-filters.outputs.filters }}
