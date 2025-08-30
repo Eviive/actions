@@ -1,15 +1,15 @@
-name: Install Kustomize
+name: Setup Kustomize
 author: Eviive
-description: Installs Kustomize
+description: Sets up Kustomize
 
 inputs:
   version:
-    description: The Kustomize version to install
+    description: The Kustomize version to set up
 
 runs:
   using: composite
   steps:
-    - name: Install Kustomize
+    - name: Setup Kustomize
       shell: bash
       run: |
         mkdir -p ${{ runner.temp }}/kustomize
@@ -19,6 +19,6 @@ runs:
       shell: bash
       run: echo "${{ runner.temp }}/kustomize" >> $GITHUB_PATH
 
-    - name: Verify Kustomize Installation
+    - name: Verify Kustomize Setup
       shell: bash
       run: kustomize version

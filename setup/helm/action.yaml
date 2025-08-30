@@ -1,0 +1,27 @@
+name: Setup Helm
+author: Eviive
+description: Sets up Helm
+
+inputs:
+  version:
+    description: The Helm version to set up
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Helm
+      shell: bash
+      env:
+        HELM_INSTALL_DIR: ${{ runner.temp }}/helm
+        VERSION: ${{ inputs.version }}
+      run: |
+        mkdir -p $HELM_INSTALL_DIR
+        curl -s "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3" | bash -s -- ${VERSION:+-v $VERSION}
+
+    - name: Add Helm to PATH
+      shell: bash
+      run: echo "${{ runner.temp }}/helm" >> $GITHUB_PATH
+
+    - name: Verify Helm Setup
+      shell: bash
+      run: helm version
