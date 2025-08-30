@@ -9,10 +9,10 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Download Installer
+    - name: Install Kustomize
       shell: bash
       run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash -s -- ${{ inputs.version }} /usr/local/bin
 
-    - name: Verify Installation
+    - name: Verify Kustomize Installation
       shell: bash
       run: kustomize version

@@ -1,0 +1,20 @@
+name: Install Helm
+author: Eviive
+description: Installs Helm
+
+inputs:
+  version:
+    description: The Helm version to install
+
+runs:
+  using: composite
+  steps:
+    - name: Install Helm
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: curl -s "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3" | bash -s -- ${VERSION:+-v $VERSION}
+
+    - name: Verify Helm Installation
+      shell: bash
+      run: helm version
