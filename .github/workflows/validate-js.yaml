@@ -1,0 +1,24 @@
+name: validate-js.yaml
+
+on:
+  workflow_call:
+    inputs:
+      prettier:
+        description: Whether to run Prettier
+        type: boolean
+        default: true
+      eslint:
+        description: Whether to run ESLint
+        type: boolean
+        default: true
+
+jobs:
+  prettier:
+    name: Prettier
+    if: ${{ inputs.prettier }}
+    uses: ./.github/workflows/validate-format-prettier.yaml
+
+  eslint:
+    name: ESLint
+    if: ${{ inputs.eslint }}
+    uses: ./.github/workflows/validate-lint-eslint.yaml
