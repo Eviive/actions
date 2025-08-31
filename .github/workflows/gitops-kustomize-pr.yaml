@@ -26,11 +26,10 @@ on:
         description: The Docker tag to set in the Kustomize file
         required: true
         type: string
-    secret:
+    secrets:
       token:
         description: The token to access the GitOps repository
         required: true
-        type: string
 
 jobs:
   gitops-kustomize-pr:
