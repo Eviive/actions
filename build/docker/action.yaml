@@ -24,6 +24,11 @@ inputs:
     description: Whether to use Git LFS
     default: 'false'
 
+outputs:
+  version:
+    description: The Docker image's version
+    value: ${{ steps.docker-metadata.outputs.version }}
+
 runs:
   using: composite
   steps:
