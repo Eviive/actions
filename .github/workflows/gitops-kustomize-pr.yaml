@@ -49,7 +49,6 @@ jobs:
           version: ${{ inputs.kustomize-version }}
 
       - name: Update image
-        shell: bash
         working-directory: ${{ inputs.kustomize-working-directory }}
         run: kustomize edit set image ${{ inputs.kustomize-image }}=${{ inputs.docker-image }}:${{ inputs.docker-tag }}
 
