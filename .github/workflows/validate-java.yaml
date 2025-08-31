@@ -31,7 +31,7 @@ on:
 jobs:
   checkstyle:
     name: CheckStyle
-    if: ${{ inputs.checkstyle }}
+    if: ${{ inputs.checkstyle && inputs.checkstyle-version != '' }}
     uses: ./.github/workflows/validate-lint-checkstyle.yaml
     with:
       version: ${{ inputs.checkstyle-version }}
