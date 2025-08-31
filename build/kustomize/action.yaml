@@ -1,4 +1,4 @@
-name: Kustomize Build
+name: Build Kustomize
 author: Eviive
 description: Builds Kubernetes manifests using Kustomize
 

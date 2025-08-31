@@ -1,4 +1,4 @@
-name: Docker Build
+name: Build Docker
 author: Eviive
 description: Builds a Docker image
 

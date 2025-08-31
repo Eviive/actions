@@ -1,4 +1,4 @@
-name: Find Changed Kustomize Overlays
+name: Find Kustomize Changed Overlays
 author: Eviive
 description: Finds all the changed Kustomize overlays
 
@@ -26,7 +26,7 @@ runs:
         echo "EOF" >> $GITHUB_OUTPUT
 
     - id: filter
-      name: Filter changed Kustomize overlays
+      name: Filter Kustomize changed overlays
       uses: dorny/paths-filter@v3
       with:
         filters: ${{ steps.build-filters.outputs.filters }}

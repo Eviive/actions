@@ -38,6 +38,6 @@ runs:
       shell: bash
       run: echo "${{ inputs.properties }}" > checkstyle.properties
 
-    - name: Run CheckStyle
+    - name: CheckStyle
       shell: bash
       run: java -jar checkstyle.jar -c ${{ inputs.config }} -p checkstyle.properties ${{ inputs.workdir }}
