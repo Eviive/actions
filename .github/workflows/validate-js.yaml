@@ -1,4 +1,4 @@
-name: validate-js.yaml
+name: Validate JavaScript
 
 on:
   workflow_call:
