@@ -1,0 +1,47 @@
+name: CheckStyle
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: The CheckStyle version to install
+        required: true
+        type: string
+      java-version:
+        description: The Java version to install
+        type: string
+        default: "21"
+      config:
+        description: The path to the Checkstyle configuration file
+        type: string
+        default: config/checkstyle/checkstyle.xml
+      properties:
+        description: The properties file content to use with CheckStyle
+        type: string
+      working-directory:
+        description: The working directory relative to the root directory
+        type: string
+        default: src/main/java
+
+jobs:
+  checkstyle:
+    name: CheckStyle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: temurin
+
+      - name: Setup CheckStyle
+        run: wget -q -O checkstyle.jar https://github.com/checkstyle/checkstyle/releases/download/checkstyle-${{ inputs.version }}/checkstyle-${{ inputs.version }}-all.jar
+
+      - name: Setup CheckStyle properties
+        run: echo "${{ inputs.properties }}" > checkstyle.properties
+
+      - name: Run CheckStyle
+        run: java -jar checkstyle.jar -c ${{ inputs.config }} -p checkstyle.properties ${{ inputs.working-directory }}
