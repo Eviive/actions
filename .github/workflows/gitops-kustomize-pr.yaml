@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       kustomize-version:
-        description: The Kustomize version to update the image tag with
+        description: The Kustomize version to use to update the image tag
         type: string
       kustomize-working-directory:
         description: The Kustomize working directory to update the image tag in

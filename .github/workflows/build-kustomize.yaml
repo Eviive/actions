@@ -3,16 +3,16 @@ name: Build Kustomize
 on:
   workflow_call:
     inputs:
+      kustomize-version:
+        description: The Kustomize version to use
+        type: string
+      helm-version:
+        description: The Helm version to use if needed
+        type: string
       working-directory:
         description: The working directory to run Kustomize in
         type: string
         default: .
-      kustomize-version:
-        description: The Kustomize version to build with
-        type: string
-      helm-version:
-        description: The Helm version to build with if needed
-        type: string
 
 jobs:
   build-kustomize:
