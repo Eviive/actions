@@ -34,7 +34,7 @@ runs:
         token: ${{ inputs.token }}
 
     - name: Setup Kustomize
-      uses: eviive/actions/install/kustomize@main
+      uses: eviive/actions/setup/kustomize@main
       with:
         version: ${{ inputs.kustomize-version }}
 
