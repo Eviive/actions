@@ -1,0 +1,31 @@
+name: Find Kustomize Overlay Changes
+
+on:
+  workflow_call:
+
+jobs:
+  find-kustomize-overlay-changes:
+    name: Find Kustomize Changed Overlays
+    runs-on: ubuntu-latest
+    outputs:
+      overlay-changes: ${{ steps.filter.outputs.changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: build-filters
+        name: Build Kustomize overlay filters
+        run: |
+          echo "filters<<EOF" >> $GITHUB_OUTPUT
+          find . -path "*/overlays/*/kustomization.yaml" | while read file; do
+            path=$(dirname "$file" | sed 's|^\./||')
+            folder=$(echo "$path" | cut -d'/' -f1)
+            echo "$path: $folder/**" >> $GITHUB_OUTPUT
+          done
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - id: filter
+        name: Filter Kustomize overlay changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: ${{ steps.build-filters.outputs.filters }}
