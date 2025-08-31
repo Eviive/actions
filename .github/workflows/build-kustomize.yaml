@@ -1,0 +1,50 @@
+name: Build Kustomize
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: The working directory to run Kustomize in
+        type: string
+        default: .
+      kustomize-version:
+        description: The Kustomize version to build with
+        type: string
+      helm-version:
+        description: The Helm version to build with if needed
+        type: string
+
+jobs:
+  build-kustomize:
+    name: Build Kustomize
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Kustomize
+        uses: eviive/actions/setup/kustomize@main
+        with:
+          version: ${{ inputs.kustomize-version }}
+
+      - id: check-helm
+        name: Check if Helm is needed
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          if grep -q "helmCharts:" kustomization.yaml; then
+            echo "need-helm=true" >> $GITHUB_OUTPUT
+            echo "helm-args=--enable-helm --load-restrictor LoadRestrictionsNone" >> $GITHUB_OUTPUT
+          else
+            echo "need-helm=false" >> $GITHUB_OUTPUT
+            echo "helm-args=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Helm
+        if: ${{ steps.check-helm.outputs.need-helm == 'true' }}
+        uses: eviive/actions/setup/helm@main
+        with:
+          version: ${{ inputs.helm-version }}
+
+      - name: Build Kustomize
+        working-directory: ${{ inputs.working-directory }}
+        run: kustomize build ${{ steps.check-helm.outputs.helm-args }} .
