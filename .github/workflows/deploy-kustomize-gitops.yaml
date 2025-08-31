@@ -1,0 +1,78 @@
+name: Deploy Kustomize GitOps
+
+on:
+  workflow_call:
+    inputs:
+      docker-hub-username:
+        description: Docker Hub username
+        required: true
+        type: string
+      docker-hub-repository:
+        description: Docker Hub repository where the image will be pushed
+        required: true
+        type: string
+      dockerfile:
+        description: Path to the Dockerfile
+        type: string
+        default: Dockerfile
+      docker-tag-prefix:
+        description: Prefix to add to the Docker tag
+        type: string
+      docker-build-args-version:
+        description: Whether to add the version as a build argument
+        type: boolean
+        default: false
+      lfs:
+        description: Whether to use Git LFS
+        type: boolean
+        default: false
+      gitops-repository:
+        description: The GitOps repository where the PR will be created
+        required: true
+        type: string
+      kustomize-version:
+        description: The Kustomize version to use to update the image tag
+        type: string
+      kustomize-working-directory:
+        description: The Kustomize working directory to update the image tag in
+        required: true
+        type: string
+      kustomize-image:
+        description: The Kustomize image to update
+        required: true
+        type: string
+    secrets:
+      docker-hub-token:
+        description: Docker Hub token
+        required: true
+      gitops-token:
+        description: The token to access the GitOps repository
+        required: true
+
+jobs:
+  build-docker:
+    name: Build Docker
+    uses: ./.github/workflows/build-docker.yaml
+    with:
+      docker-hub-username: ${{ inputs.docker-hub-username }}
+      docker-hub-repository: ${{ inputs.docker-hub-repository }}
+      dockerfile: ${{ inputs.dockerfile }}
+      docker-tag-prefix: ${{ inputs.docker-tag-prefix }}
+      docker-build-args-version: ${{ inputs.docker-build-args-version }}
+      lfs: ${{ inputs.lfs }}
+    secrets:
+      docker-hub-token: ${{ secrets.docker-hub-token }}
+
+  gitops-kustomize-pr:
+    name: GitOps Kustomize PR
+    needs: build-docker
+    uses: ./.github/workflows/gitops-kustomize-pr.yaml
+    with:
+      repository: ${{ inputs.gitops-repository }}
+      kustomize-version: ${{ inputs.kustomize-version }}
+      kustomize-working-directory: ${{ inputs.kustomize-working-directory }}
+      kustomize-image: ${{ inputs.kustomize-image }}
+      docker-image: ${{ inputs.docker-hub-username }}/${{ inputs.docker-hub-repository }}
+      docker-tag: ${{ needs.build-docker.outputs.version }}
+    secrets:
+      token: ${{ secrets.gitops-token }}

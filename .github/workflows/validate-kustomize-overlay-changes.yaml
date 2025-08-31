@@ -1,0 +1,53 @@
+name: Validate Kustomize Overlay Changes
+
+on:
+  workflow_call:
+    inputs:
+      kustomize-version:
+        description: The Kustomize version to use
+        type: string
+      helm-version:
+        description: The Helm version to use if needed
+        type: string
+
+jobs:
+  find-kustomize-overlay-changes:
+    name: Find Changed Kustomize Overlays
+    runs-on: ubuntu-latest
+    outputs:
+      changed-overlays: ${{ steps.filter.outputs.changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: build-filters
+        name: Build Kustomize overlay filters
+        run: |
+          echo "filters<<EOF" >> $GITHUB_OUTPUT
+          find . -path "*/overlays/*/kustomization.yaml" | while read file; do
+            path=$(dirname "$file" | sed 's|^\./||')
+            folder=$(echo "$path" | sed 's|^\(.*\)overlays/.*|\1|')
+            [ -z "$folder" ] && folder="./"
+            echo "$path: $folder**" >> $GITHUB_OUTPUT
+          done
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - id: filter
+        name: Filter Kustomize overlay changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: ${{ steps.build-filters.outputs.filters }}
+
+  build-kustomize-overlay:
+    name: Build Kustomize Overlay
+    needs: find-kustomize-overlay-changes
+    if: needs.find-kustomize-overlay-changes.outputs.changed-overlays != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        overlay: ${{ fromJSON(needs.find-kustomize-overlay-changes.outputs.changed-overlays) }}
+    uses: ./.github/workflows/build-kustomize.yaml
+    with:
+      kustomize-version: ${{ inputs.kustomize-version }}
+      helm-version: ${{ inputs.helm-version }}
+      working-directory: ${{ matrix.overlay }}
