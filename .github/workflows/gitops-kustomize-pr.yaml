@@ -1,0 +1,65 @@
+name: GitOps Kustomize PR
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        description: The GitOps repository where the PR will be created
+        required: true
+        type: string
+      kustomize-version:
+        description: The Kustomize version to update the image tag with
+        type: string
+      kustomize-working-directory:
+        description: The Kustomize working directory to update the image tag in
+        required: true
+        type: string
+      kustomize-image:
+        description: The Kustomize image to update
+        required: true
+        type: string
+      docker-image:
+        description: The Docker image to set in the Kustomize file
+        required: true
+        type: string
+      docker-tag:
+        description: The Docker tag to set in the Kustomize file
+        required: true
+        type: string
+    secret:
+      token:
+        description: The token to access the GitOps repository
+        required: true
+        type: string
+
+jobs:
+  gitops-kustomize-pr:
+    name: GitOps Kustomize PR
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository }}
+          token: ${{ secrets.token }}
+
+      - name: Setup Kustomize
+        uses: eviive/actions/setup/kustomize@main
+        with:
+          version: ${{ inputs.kustomize-version }}
+
+      - name: Update image
+        shell: bash
+        working-directory: ${{ inputs.kustomize-working-directory }}
+        run: kustomize edit set image ${{ inputs.kustomize-image }}=${{ inputs.docker-image }}:${{ inputs.docker-tag }}
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.token }}
+          commit-message: "ops(${{ inputs.kustomize-image }}): ${{ inputs.docker-tag }}"
+          branch: release/${{ inputs.kustomize-image }}/${{ inputs.docker-tag }}
+          title: "Release ${{ inputs.kustomize-image }}: ${{ inputs.docker-tag }}"
+          body: ""
+          assignees: ${{ github.actor }}
