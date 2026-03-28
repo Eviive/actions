@@ -30,6 +30,10 @@ on:
       docker-hub-token:
         description: Docker Hub token
         required: true
+    outputs:
+      version:
+        description: The version of the built Docker image
+        value: ${{ jobs.build-docker.outputs.version }}
 
 jobs:
   build-docker:
